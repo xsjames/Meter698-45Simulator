@@ -14,7 +14,8 @@ def Electricity_meter_date_and_week_and_time(data):
         time2_str = datetime.datetime.now().strftime('%T').replace(':', '')
         return time2_str
     elif data == '@FreezeTime@':
-        time3_str = datetime.datetime.now().strftime('%M%H%d%m%y').replace(':', '')
+        # time3_str = datetime.datetime.now().strftime('%M%H%d%m%y').replace(':', '')
+        time3_str = datetime.datetime.now().strftime('%y%m%d%H%M').replace(':', '')
         return time3_str
     else:
         print('Electricity_meter_date_and_week_and_time not found!')
@@ -166,9 +167,14 @@ def deal_receive(message):
         text = returnframe(Comm.list2str(address), reconctrlcode, L, D, returnstr)
         return (text, '无法解析:', OI)
     else:
-        if re.match("0610", OI):
+        if re.match("0201FF00", OI):
+            returnstr = "3232" + "3232" * 2;
+
+        elif re.match("0610", OI):
             TIME = Comm.list2str(message[15:20])
-            times = int(message[14]) - 33
+            print("time:", TIME, message[14])
+            times = int(message[14], 16) - 33
+            print("times:", times)
             returnstr = TIME + plus33(a[0]) * times
         else:
             returnstr = plus33(a[0])  # Date!!!!

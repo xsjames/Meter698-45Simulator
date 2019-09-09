@@ -16,14 +16,14 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.ui = UI_Meter698.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle('模拟表程序 V1.35')
+        self.setWindowTitle('模拟表程序 v1.4')
         self.addItem = self.GetSerialNumber()
         while 1:
-            if self.addItem == None:
-                Warn = QMessageBox.warning(self, '警告', '未检测到串口', QMessageBox.Reset | QMessageBox.Cancel)
-                if Warn == QMessageBox.Cancel:
+            if self.addItem is None:
+                warn = QMessageBox.warning(self, '警告', '未检测到串口', QMessageBox.Reset | QMessageBox.Cancel)
+                if warn == QMessageBox.Cancel:
                     self.close()
-                if Warn == QMessageBox.Reset:
+                if warn == QMessageBox.Reset:
                     self.addItem = self.GetSerialNumber()
                 continue
             else:
@@ -43,14 +43,11 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon('source/taxi.ico'))
         self.ui.pushButton_2.setToolTip('清空当前窗口记录')
         self.ui.toolButton.setToolTip('设置')
+        self.ui.label_5.setText('')
 
- 
     def showd(self):
         self.config.setWindowModality(Qt.ApplicationModal)
         self.config.exec()
-
-    def showtime(self):
-        self.ui.label_5.setText()
 
     def closeEvent(self, *args, **kwargs):
         try:
@@ -84,8 +81,6 @@ class MainWindow(QMainWindow):
             self.conf.set('MeterData', text[0], text[1] + ' ' + text[2][:-1])
         self.conf.write(ini)
 
-
-
     def serial_prepare(self):
         try:
             self.Connect.setDaemon(True)
@@ -95,6 +90,7 @@ class MainWindow(QMainWindow):
             self.__switch.emit('1')
             self.Run.setDaemon(True)
             self.Run.start()
+            self.ui.pushButton.clicked.connect(lambda: self.Run.res())
         except:
             print_exc(file=open('bug.txt', 'a+'))
 
@@ -132,19 +128,22 @@ class RuningTime(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        self.start = time.time()
+        self.start_ = time.time()
         while 1:
             time.sleep(1)
             self.end = time.time()
-            a = int(self.end - self.start)
-            if 3600> a > 60:
+            a = int(self.end - self.start_)
+            if 3600 > a > 60:
                 b = a // 60
-                MainWindow.ui.label_5.setText('System running time: ' + str(b) + ' min')
+                MainWindow.ui.label_5.setText('系统运行时间: ' + str(b) + ' 分钟 ' + str(a % 60) + ' 秒')
             elif a >= 3600:
                 b = a // 3600
-                MainWindow.ui.label_5.setText('System running time: ' + str(b) + ' hour')
+                MainWindow.ui.label_5.setText('系统运行时间: ' + str(b) + ' 时 ' + str(a % 3600 // 60) + ' 分钟')
             else:
-                MainWindow.ui.label_5.setText('System running time: ' + str(a) + ' sec')
+                MainWindow.ui.label_5.setText('系统运行时间: ' + str(a) + ' 秒')
+
+    def res(self):
+        self.start_ = time.time()
 
 
 class Connect(threading.Thread):
@@ -153,21 +152,21 @@ class Connect(threading.Thread):
         self.serial = serial.Serial()
         self.__runflag = threading.Event()
         self.config = Config()
-        self.run_ = RuningTime()
-
 
     def switch(self):
         if self.__runflag.isSet():
             MainWindow.ui.pushButton.setText('启动')
-            print('关闭')
+            print('关闭状态')
             MainWindow.Show_Hidden('0')
             self.__runflag.clear()
+            MainWindow.ui.label_5.hide()
 
         else:
             MainWindow.ui.pushButton.setText('关闭')
-            print('启动')
+            print('启动状态')
             MainWindow.Show_Hidden('1')
             self.__runflag.set()
+            MainWindow.ui.label_5.show()
 
     def run(self):
         self.__runflag.set()
@@ -242,7 +241,7 @@ class Connect(threading.Thread):
                                 try:
                                     while 1:
                                         print('data:', data)
-                                        if data[-1] == '6' and data[-2] == '1'and len(data)>20:
+                                        if data[-1] == '6' and data[-2] == '1' and len(data) > 20:
                                             if data[0] == '6' and data[1] == '8':
                                                 print('完整报文:', data)
                                                 break
@@ -251,7 +250,7 @@ class Connect(threading.Thread):
                                                 continue
                                         if data[0] == '6' and data[1] == '8':
                                             if Meter698_core.check(makelist(data)) == 0:
-                                                print('找出有效报文',data)
+                                                print('找出有效报文', data)
                                                 break
                                             else:
                                                 print('不完整报文!继续接收:', data)
@@ -308,15 +307,16 @@ class Config(QDialog):
         QDialog.__init__(self)
         self.ui = UI_Meter698_config.Ui_Dialog()
         self.ui.setupUi(self)
-        self.ui.pushButton.clicked.connect(self.get_auto_day_frozon)
-        self.ui.pushButton.clicked.connect(self.get_auto_curve_frozon)
-        self.ui.pushButton.clicked.connect(self.get_auto_increase)
-        self.ui.pushButton.clicked.connect(self.close)
-        self.ui.pushButton.clicked.connect(self.list_save)
-        self.ui.pushButton.clicked.connect(self.bw)
-        self.ui.pushButton.clicked.connect(self.set_max)
-        self.ui.pushButton.clicked.connect(self.set_mac)
-        self.ui.pushButton.clicked.connect(self.sent_from_to)
+        self.ui.pushButton.clicked.connect(self.running)
+        # self.ui.pushButton.clicked.connect(self.get_auto_day_frozon)
+        # self.ui.pushButton.clicked.connect(self.get_auto_curve_frozon)
+        # self.ui.pushButton.clicked.connect(self.get_auto_increase)
+        # self.ui.pushButton.clicked.connect(self.close)
+        # self.ui.pushButton.clicked.connect(self.list_save)
+        # self.ui.pushButton.clicked.connect(self.bw)
+        # self.ui.pushButton.clicked.connect(self.set_max)
+        # self.ui.pushButton.clicked.connect(self.set_mac)
+        # self.ui.pushButton.clicked.connect(self.sent_from_to)
         self.ui.pushButton_3.clicked.connect(self.list_increas)
         self.ui.pushButton_4.clicked.connect(self.list_decreas)
         self.conf = configparser.ConfigParser()
@@ -334,6 +334,28 @@ class Config(QDialog):
         self.ui.checkBox_4.setToolTip('日冻结数据随日冻结时标距离当前系统日期的差值进行变化(Selector 09 无效)')
         self.ui.checkBox_5.setToolTip('明文回复附带MAC‘0A0B0C0D’')
         self.ui.checkBox_6.clicked.connect(self.Curve_leak)
+
+    def running(self):
+        self.get_auto_day_frozon()
+        self.get_auto_curve_frozon()
+        self.get_auto_increase()
+        self.close()
+        self.list_save()
+        self.bw()
+        self.set_max()
+        self.set_mac()
+        self.sent_from_to()
+        self.event_special()
+        Meter698_core.event_blacklist = self.ui.lineEdit_22.text().split(';')
+
+    def event_special(self):
+        Meter698_core.apdu_3320 = self.ui.lineEdit_3.text()
+        if self.ui.radioButton_4.isChecked():
+            Meter698_core.event_stat = 0
+        elif self.ui.radioButton_5.isChecked():
+            Meter698_core.event_stat = 1
+        else:
+            Meter698_core.event_stat = 2
 
     def Curve_leak(self):
         if self.ui.checkBox_6.isChecked():
@@ -409,6 +431,7 @@ class Config(QDialog):
         else:
             print('get_auto_day_frozon FLASE')
             Meter698_core.set_auto_day_frozon(0)
+
         return self.ui.checkBox.isChecked()
 
     def get_auto_curve_frozon(self):

@@ -133,13 +133,16 @@ def Information(num, detail, APDU):
             returnvalue = A_ResultRecord_SEQUENCE(APDU[1:5])
             if returnvalue == 0:
                 print('0501抄事件')  # 3320
-                LargeOAD = '850100' + Comm.list2str(
-                    APDU[1:5]) + '01 01 04 51 30 1b 02 00 51 30 2a 02 00 51 30 13 02 00 51 30 11 02 00 00 00'.replace(
-                    ' ', '')
-                print('0501抄事件', LargeOAD)
-                st = [Comm.list2str(APDU[1:5]), '事件特殊处理', '']
-                global OI  # 屏幕显示
-                OI = OI + st[0:2]
+                # LargeOAD = '850100' + Comm.list2str(
+                #     APDU[1:5]) + '01 01 04 51 30 1b 02 00 51 30 2a 02 00 51 30 13 02 00 51 30 11 02 00 00 00'.replace(
+                #     ' ', '')
+                if APDU[1:5] == ["33", "20", "02", "00"]:
+                    global apdu_3320
+                    LargeOAD = apdu_3320
+                    print('0501抄事件', LargeOAD)
+                    st = [Comm.list2str(APDU[1:5]), '事件特殊处理', '']
+                    global OI  # 屏幕显示
+                    OI = OI + st[0:2]
             else:
                 LargeOAD = LargeOAD + '0000'
                 ReturnMessage().reAPDUtype(num + detail + service_code)
@@ -159,6 +162,7 @@ def Information(num, detail, APDU):
             returnvalue = A_ResultRecord_SEQUENCE(APDU[1:5])
             global frozenSign, data_list
             if returnvalue == 0:
+
                 print('抄事件')
                 Event(APDU[1:])
                 return 0
@@ -297,7 +301,27 @@ def Event(APDU):
             value = Comm.list2str(remain[1:5]).zfill(4)
             event_compose_data(value)
             remain = remain[5:]
-        LargeOAD = message + '0101' + LargeOAD + '0000'
+        global event_stat
+        print("event_stat:", event_stat)
+        if event_stat == 0:
+            LargeOAD = message + '0101' + LargeOAD + '0000'
+        elif event_stat == 2:
+            LargeOAD = message + '01000000'
+        else:
+            stat = 0
+            global event_blacklist
+            print("event_blacklist:", event_blacklist)
+            print("Comm.list2str(APDU[0:4]):", Comm.list2str(APDU[0:4]))
+            for x in event_blacklist:
+                if x == Comm.list2str(APDU[0:4]):
+                    print("x:", x)
+                    print("Comm.list2str(APDU[0:4]):", Comm.list2str(APDU[0:4]))
+                    LargeOAD = message + '01000000'
+                    stat = 1
+                    break
+            if stat == 0:
+                LargeOAD = message + '0101' + LargeOAD + '0000'
+
         ReturnMessage().head()
         print('组成', LargeOAD)
     else:
@@ -915,3 +939,6 @@ from_to = []
 from_to_sign = 0
 hour_ = 0
 minute_ = 0
+apdu_3320 = ''
+event_stat = 0
+event_blacklist = []
