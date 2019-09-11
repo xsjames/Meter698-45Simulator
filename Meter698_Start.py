@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.ui = UI_Meter698.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle('模拟表程序 v1.4')
+        self.setWindowTitle('模拟表程序 v1.41')
         self.addItem = self.GetSerialNumber()
         while 1:
             if self.addItem is None:
@@ -209,7 +209,7 @@ class Connect(threading.Thread):
                 global data
                 data = ''
                 while self.__runflag.isSet():
-                    time.sleep(0.1)
+                    time.sleep(0.01)
                     if self.serial.isOpen is False:
                         break
                     num = self.serial.inWaiting()
@@ -243,6 +243,8 @@ class Connect(threading.Thread):
                                         print('data:', data)
                                         if data[-1] == '6' and data[-2] == '1' and len(data) > 20:
                                             if data[0] == '6' and data[1] == '8':
+                                                # TODO
+
                                                 print('完整报文:', data)
                                                 break
                                             elif data[0] == 'f' and data[1] == 'e':
@@ -349,7 +351,7 @@ class Config(QDialog):
         Meter698_core.event_blacklist = self.ui.lineEdit_22.text().split(';')
 
     def event_special(self):
-        Meter698_core.apdu_3320 = self.ui.lineEdit_3.text()
+        Meter698_core.apdu_3320 = self.ui.lineEdit_3.text().replace(" ", '')
         if self.ui.radioButton_4.isChecked():
             Meter698_core.event_stat = 0
         elif self.ui.radioButton_5.isChecked():

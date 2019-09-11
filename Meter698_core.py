@@ -1,4 +1,4 @@
-import Comm, time, traceback, configparser, random, Meter645_core
+import Comm, time, traceback, configparser, random, Meter645_core, re
 
 
 def check(code):
@@ -78,14 +78,34 @@ def Analysis(code):
         print('black_white_SA_address', black_white_SA_address)
         if b_w_stat == 1:
             for add in black:
-                if add == black_white_SA_address:
+                print('add: ', add)
+                if add.find('-') > 0:
+                    add_range = add.split('-')
+                    start = int(add_range[0])
+                    end = int(add_range[1])
+                    print("start: ", start, "end: ", end)
+                    if start <= int(black_white_SA_address) <= end:
+                        print('检测到黑名单地址范围')
+                        return 1
+                elif add == black_white_SA_address:
                     return 1
-                pass
+
         elif b_w_stat == 2:
             for add in white:
-                if add == black_white_SA_address:
+                print('add: ', add)
+                if add.find('-') > 0:
+                    add_range = add.split('-')
+                    start = int(add_range[0])
+                    end = int(add_range[1])
+                    print("start: ", start, "end: ", end)
+                    if start <= int(black_white_SA_address) <= end:
+                        print('检测到白名单地址范围')
+                    else:
+                        return 1
+                elif add == black_white_SA_address:
+                    pass
+                else:
                     return 1
-                pass
         CA = code_remain[1 + SA_len_num:][0]
         HCS = code_remain[1 + SA_len_num:][1] + code_remain[1 + SA_len_num:][2]
         APDU = code_remain[1 + SA_len_num:][3:-3]
@@ -162,7 +182,6 @@ def Information(num, detail, APDU):
             returnvalue = A_ResultRecord_SEQUENCE(APDU[1:5])
             global frozenSign, data_list
             if returnvalue == 0:
-
                 print('抄事件')
                 Event(APDU[1:])
                 return 0
@@ -826,6 +845,7 @@ class ReturnMessage():
                 self.get = self.get.split(' ')
                 text = [newOI, self.get[0], self.get[1]]
             except:
+                traceback.print_exc(file=open('bug.txt', 'a+'))
                 if OI == '202a0200':
                     pass
                 else:

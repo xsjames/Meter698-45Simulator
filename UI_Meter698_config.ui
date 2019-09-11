@@ -41,7 +41,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
    </property>
    <widget class="QWidget" name="tab">
     <property name="contextMenuPolicy">
@@ -220,7 +220,7 @@
       </rect>
      </property>
      <property name="title">
-      <string>通信地址黑/白名单:(多地址用 / 隔开)</string>
+         <string>通信地址黑/白名单:(多地址用 / 隔开;地址范围用 - )</string>
      </property>
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
@@ -351,7 +351,7 @@
       <rect>
        <x>0</x>
        <y>270</y>
-       <width>239</width>
+          <width>141</width>
        <height>31</height>
       </rect>
      </property>
@@ -570,7 +570,7 @@
                        <string>多个事件用英文分号隔开(;)</string>
                    </property>
                </widget>
-               <widget class="QWidget" name="">
+               <widget class="QWidget" name="layoutWidget">
                    <property name="geometry">
                        <rect>
                            <x>11</x>
@@ -698,7 +698,7 @@
        </rect>
       </property>
       <property name="text">
-          <string>Version：V1.3</string>
+          <string>Version：V1.4</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_3">
