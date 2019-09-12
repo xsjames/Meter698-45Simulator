@@ -40,9 +40,9 @@ def B_W_add(stat, add):
 
 def Wild_match_Analysis(code):
     code = Comm.makelist(code)
-    re = check(code)
-    print('Wild_match_Analysis: ', re)
-    if re == 0:
+    re_ = check(code)
+    print('Wild_match_Analysis: ', re_)
+    if re_ == 0:
         lenth = SASign(Comm.dec2bin(int(code[4], 16)).zfill(8))
         wild_a_full = 'aa' * lenth
         add_wild = Comm.list2str(code[5:5 + lenth])
@@ -57,8 +57,8 @@ def Wild_match_Analysis(code):
 
 def Analysis(code):
     code = Comm.makelist(code)
-    re = check(code)
-    if re == 0:
+    re_ = check(code)
+    if re_ == 0:
         try:
             ctrlc_1(Comm.dec2bin(int(code[3], 16)))  # 控制码
         except:
@@ -73,39 +73,51 @@ def Analysis(code):
         frozenSign = 0
         SA_num_len = code_remain[0:1 + SA_len_num]
         print('SA_num_len:', SA_num_len)
-        global black_white_SA_address
+        global black_white_SA_address  # 收到报文的地址
         black_white_SA_address = Comm.list2str(SA_num_len[::-1][0:SA_len_num])
         print('black_white_SA_address', black_white_SA_address)
-        if b_w_stat == 1:
-            for add in black:
-                print('add: ', add)
-                if add.find('-') > 0:
-                    add_range = add.split('-')
-                    start = int(add_range[0])
-                    end = int(add_range[1])
-                    print("start: ", start, "end: ", end)
-                    if start <= int(black_white_SA_address) <= end:
-                        print('检测到黑名单地址范围')
+        if black_white_SA_address.find('a') == -1:
+            if b_w_stat == 1:
+                for add in black:
+                    print('add: ', add)
+                    if add.find('-') > 0:
+                        add_range = add.split('-')
+                        start = int(add_range[0])
+                        end = int(add_range[1])
+                        print("start: ", start, "end: ", end)
+                        if start <= int(black_white_SA_address) <= end:
+                            print('检测到黑名单地址范围')
+                            return 1
+                        else:
+                            continue
+                    elif add == black_white_SA_address:
                         return 1
-                elif add == black_white_SA_address:
-                    return 1
-
-        elif b_w_stat == 2:
-            for add in white:
-                print('add: ', add)
-                if add.find('-') > 0:
-                    add_range = add.split('-')
-                    start = int(add_range[0])
-                    end = int(add_range[1])
-                    print("start: ", start, "end: ", end)
-                    if start <= int(black_white_SA_address) <= end:
-                        print('检测到白名单地址范围')
+            elif b_w_stat == 2:
+                num = 0
+                for add in white:
+                    print('add: ', add)
+                    if add.find('-') > 0:
+                        add_range = add.split('-')
+                        start = int(add_range[0])
+                        end = int(add_range[1])
+                        print("start: ", start, "end: ", end)
+                        if start <= int(black_white_SA_address) <= end:
+                            print('检测到白名单地址范围')
+                            num = -1
+                            break
+                        else:
+                            num += 1
+                    elif add == black_white_SA_address:
+                        break
                     else:
-                        return 1
-                elif add == black_white_SA_address:
-                    pass
-                else:
+                        num += 1
+                print("白名单判断 ", black_white_SA_address)
+                if num == white.__len__():
+                    print('不通过')
                     return 1
+                elif num == -1:
+                    print('通过')
+                    pass
         CA = code_remain[1 + SA_len_num:][0]
         HCS = code_remain[1 + SA_len_num:][1] + code_remain[1 + SA_len_num:][2]
         APDU = code_remain[1 + SA_len_num:][3:-3]
@@ -130,7 +142,7 @@ def Analysis(code):
 
 
 def Information(num, detail, APDU):
-    global service_code
+    global service_code, LargeOAD, GetRequestNormal_0501
     service_code = APDU[0]
     if num == '01':
         print(num, '预链接请求')
@@ -148,7 +160,6 @@ def Information(num, detail, APDU):
         print(num, '读取请求', end=' ')
         if detail == '01':
             print(detail, '读取一个对象属性请求(GetRequestNormal) ')
-            global LargeOAD, GetRequestNormal_0501
             GetRequestNormal_0501 = 1
             returnvalue = A_ResultRecord_SEQUENCE(APDU[1:5])
             if returnvalue == 0:
@@ -204,7 +215,7 @@ def Information(num, detail, APDU):
                 print('from_to', from_to)
                 no_timme = int(hour_) * 60 + int(minute_)
                 print('no_timme', no_timme)
-                if no_timme > from_to[0] and no_timme < from_to[1]:
+                if from_to[0] < no_timme < from_to[1]:
                     print('pass the times')
                     LargeOAD = datatype + str(returnvalue) + '0200' + hex(relen)[2:].zfill(2) + LargeOAD + '01000000'
                 else:
@@ -220,9 +231,6 @@ def Information(num, detail, APDU):
             ReturnMessage().head()
             # print('data_list', Comm.list_append(data_list))
             # print('组成', LargeOAD)
-
-
-
 
         elif detail == '04':
             print(detail, '读取若干个记录型对象属性请求 (GetRequestRecordList) ')
@@ -732,22 +740,44 @@ class ReturnMessage():
         relen += 1
 
     def compose_data(self, OI):
-        global LargeOAD, auto_increase, trans
+        global LargeOAD, auto_increase, trans, SA_num_len
         try:
-            self.get = self.conf_new.get('MeterData', OI)
+            self.get = self.conf_new.get('MeterData698', OI)
             self.get = self.get.split(' ')
             text = [OI, self.get[0], self.get[1]]
         except:
-            print('未知数据标识compose_data {}'.format(OI))
+            print('未知数据标识: ', OI)
             traceback.print_exc(file=open('bug.txt', 'a+'))
 
         if OI == '40010200' or OI == '40020200' or OI == '202a0200':
             st = ['202a0200/40010200/40020200', '目标服务器地址/通信地址/表号', '']
             self.save(st)
+            print('b_w_stat: ', b_w_stat, 'black_white_SA_address', black_white_SA_address, 'white', white)
+            if b_w_stat == 2 and black_white_SA_address.find('a') != -1 and black_white_SA_address != 'aaaaaaaaaaaa':
+                add_aa_2 = int(black_white_SA_address[-2:])
+                for add in white:
+                    if add.find('-') > 0:
+                        add_range = add.split('-')
+                        start = int(add_range[0])
+                        end = int(add_range[1])
+                        add_list = []
+                        while start <= end:
+                            add_list.append(start)
+                            start += 1
+                        for y in add_list:
+                            if y % 100 == add_aa_2:
+                                trans = str(int(y / 100) * 100 + add_aa_2).zfill(12)
+                                SA_num_len = '05' + Comm.list2str(Comm.makelist(trans)[::-1])
+                                print('compose_data_trans', trans)
+                                self.message = OI + '01' + '550705' + trans
+                                print('message', self.message)
+                                LargeOAD = LargeOAD + self.message
+                                return 0
+            # todo
             # trans = str(int(text[2][6:-1]) + random.randint(0, _max)).zfill(12)
             trans = str(int(text[2][6::])).zfill(12)
             print('compose_data_trans', trans)
-            self.message = '40010200' + '01' + '550705' + trans
+            self.message = OI + '01' + '550705' + trans
             print('message', self.message)
             LargeOAD = LargeOAD + self.message
             return 0
@@ -841,7 +871,7 @@ class ReturnMessage():
             SequenceOf_ARecordRow(Daily_freeze)
         else:
             try:
-                self.get = self.conf_new.get('MeterData', newOI)
+                self.get = self.conf_new.get('MeterData698', newOI)
                 self.get = self.get.split(' ')
                 text = [newOI, self.get[0], self.get[1]]
             except:

@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.ui = UI_Meter698.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle('模拟表程序 v1.41')
+        self.setWindowTitle('模拟表程序 v1.42')
         self.addItem = self.GetSerialNumber()
         while 1:
             if self.addItem is None:
@@ -31,10 +31,10 @@ class MainWindow(QMainWindow):
         self.addItem.sort()
         self.load_ini()
         self.Connect = Connect()
-        self.Run = RuningTime()
+
         for addItem in self.addItem:
             self.ui.comboBox.addItem(addItem)
-        self.setWindowFlags(Qt.MSWindowsFixedSizeDialogHint)
+        # self.setWindowFlags(Qt.MSWindowsFixedSizeDialogHint)
         self.ui.pushButton.clicked.connect(self.serial_prepare)
         self._signal_text.connect(self.Warming_message)
         self.config = Config()
@@ -60,7 +60,7 @@ class MainWindow(QMainWindow):
         try:
             if os.path.exists('config.ini'):
                 self.conf.read('config.ini', encoding='utf-8')
-                if self.conf.has_section('MeterData') is True:
+                if self.conf.has_section('MeterData698') is True:
                     pass
                 else:
                     self.ini()
@@ -71,14 +71,14 @@ class MainWindow(QMainWindow):
 
     def ini(self):
         ini = open('config.ini', 'w', encoding='utf-8')
-        self.conf.add_section('MeterData')
+        self.conf.add_section('MeterData698')
         data = open('source\\698data', 'r', encoding='utf-8')
         while 1:
             text = data.readline()
             if text == '\n':
                 break
             text = text.split(' ')
-            self.conf.set('MeterData', text[0], text[1] + ' ' + text[2][:-1])
+            self.conf.set('MeterData698', text[0], text[1] + ' ' + text[2][:-1])
         self.conf.write(ini)
 
     def serial_prepare(self):
@@ -88,6 +88,7 @@ class MainWindow(QMainWindow):
             self.ui.pushButton.disconnect()
             self.ui.pushButton.clicked.connect(self.Connect.switch)
             self.__switch.emit('1')
+            self.Run = RuningTime()
             self.Run.setDaemon(True)
             self.Run.start()
             self.ui.pushButton.clicked.connect(lambda: self.Run.res())
@@ -135,12 +136,12 @@ class RuningTime(threading.Thread):
             a = int(self.end - self.start_)
             if 3600 > a > 60:
                 b = a // 60
-                MainWindow.ui.label_5.setText('系统运行时间: ' + str(b) + ' 分钟 ' + str(a % 60) + ' 秒')
+                MainWindow.ui.label_5.setText('运行时间: ' + str(b) + ' 分钟 ' + str(a % 60) + ' 秒')
             elif a >= 3600:
                 b = a // 3600
-                MainWindow.ui.label_5.setText('系统运行时间: ' + str(b) + ' 时 ' + str(a % 3600 // 60) + ' 分钟')
+                MainWindow.ui.label_5.setText('运行时间: ' + str(b) + ' 时 ' + str(a % 3600 // 60) + ' 分钟')
             else:
-                MainWindow.ui.label_5.setText('系统运行时间: ' + str(a) + ' 秒')
+                MainWindow.ui.label_5.setText('运行时间: ' + str(a) + ' 秒')
 
     def res(self):
         self.start_ = time.time()
@@ -209,7 +210,7 @@ class Connect(threading.Thread):
                 global data
                 data = ''
                 while self.__runflag.isSet():
-                    time.sleep(0.01)
+                    time.sleep(0.5)
                     if self.serial.isOpen is False:
                         break
                     num = self.serial.inWaiting()
@@ -341,6 +342,7 @@ class Config(QDialog):
         self.get_auto_day_frozon()
         self.get_auto_curve_frozon()
         self.get_auto_increase()
+        self.get_auto_increase_5004020000100200()
         self.close()
         self.list_save()
         self.bw()
@@ -490,7 +492,7 @@ class Config(QDialog):
         self.ui.tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self.conf.read('config.ini', encoding='utf-8')
         x = 0  # 行
-        text = self.conf.items('MeterData')
+        text = self.conf.items('MeterData698')
         for items in text:
             y = 0
             self.ui.tableWidget.setItem(x, y, QTableWidgetItem(items[0]))
@@ -512,7 +514,7 @@ class Config(QDialog):
                     y += 1
                     text_1 = text_1 + ' ' + self.ui.tableWidget.item(x, y).text()
                 text_1 = text_1
-                self.conf.set('MeterData', text_0, text_1)
+                self.conf.set('MeterData698', text_0, text_1)
                 x -= 1
             self.conf.write(open('config.ini', 'w', encoding='utf-8'))
         except:

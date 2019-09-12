@@ -104,6 +104,9 @@
       </item>
       <item>
        <widget class="QCheckBox" name="checkBox_4">
+           <property name="enabled">
+               <bool>true</bool>
+           </property>
         <property name="font">
          <font>
           <family>Algerian</family>
@@ -130,7 +133,7 @@
          <string>日冻结数据变化</string>
         </property>
         <property name="checkable">
-         <bool>false</bool>
+            <bool>true</bool>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -191,6 +194,9 @@
         </property>
         <item>
          <widget class="QLabel" name="label">
+             <property name="enabled">
+                 <bool>false</bool>
+             </property>
           <property name="text">
            <string>通配地址数量:</string>
           </property>
@@ -198,6 +204,9 @@
         </item>
         <item>
          <widget class="QLineEdit" name="lineEdit">
+             <property name="enabled">
+                 <bool>false</bool>
+             </property>
           <property name="text">
            <string/>
           </property>
@@ -252,7 +261,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="textEdit"/>
+             <widget class="QTextEdit" name="textEdit">
+                 <property name="enabled">
+                     <bool>false</bool>
+                 </property>
+             </widget>
          </item>
         </layout>
        </item>
@@ -266,7 +279,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QTextEdit" name="textEdit_2"/>
+             <widget class="QTextEdit" name="textEdit_2">
+                 <property name="enabled">
+                     <bool>false</bool>
+                 </property>
+             </widget>
          </item>
         </layout>
        </item>
@@ -351,7 +368,7 @@
       <rect>
        <x>0</x>
        <y>270</y>
-          <width>141</width>
+          <width>111</width>
        <height>31</height>
       </rect>
      </property>
@@ -752,6 +769,8 @@
                        &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;
                        -qt-block-indent:0; text-indent:0px;&quot;&gt; &lt;/p&gt;
                        &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;
+                       -qt-block-indent:0; text-indent:0px;&quot;&gt; &lt;/p&gt;
+                       &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;
                        -qt-block-indent:0; text-indent:0px;&quot;&gt;返回年月日周:@GetDateWeek@ &lt;/p&gt;
                        &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;
                        -qt-block-indent:0; text-indent:0px;&quot;&gt;返回当前时间:@GetTime@ &lt;/p&gt;
@@ -824,6 +843,38 @@
              <hint type="destinationlabel">
                  <x>307</x>
                  <y>195</y>
+             </hint>
+         </hints>
+     </connection>
+     <connection>
+         <sender>radioButton</sender>
+         <signal>toggled(bool)</signal>
+         <receiver>textEdit</receiver>
+         <slot>setEnabled(bool)</slot>
+         <hints>
+             <hint type="sourcelabel">
+                 <x>241</x>
+                 <y>139</y>
+             </hint>
+             <hint type="destinationlabel">
+                 <x>334</x>
+                 <y>139</y>
+             </hint>
+         </hints>
+     </connection>
+     <connection>
+         <sender>radioButton_2</sender>
+         <signal>toggled(bool)</signal>
+         <receiver>textEdit_2</receiver>
+         <slot>setEnabled(bool)</slot>
+         <hints>
+             <hint type="sourcelabel">
+                 <x>243</x>
+                 <y>237</y>
+             </hint>
+             <hint type="destinationlabel">
+                 <x>332</x>
+                 <y>237</y>
              </hint>
          </hints>
      </connection>

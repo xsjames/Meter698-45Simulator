@@ -46,6 +46,7 @@ class Ui_Dialog(object):
         self.checkBox.setObjectName("checkBox")
         self.verticalLayout.addWidget(self.checkBox)
         self.checkBox_4 = QtWidgets.QCheckBox(self.layoutWidget)
+        self.checkBox_4.setEnabled(True)
         font = QtGui.QFont()
         font.setFamily("Algerian")
         font.setBold(False)
@@ -58,7 +59,7 @@ class Ui_Dialog(object):
         self.checkBox_4.setToolTip("")
         self.checkBox_4.setWhatsThis("")
         self.checkBox_4.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.checkBox_4.setCheckable(False)
+        self.checkBox_4.setCheckable(True)
         self.checkBox_4.setChecked(False)
         self.checkBox_4.setAutoRepeat(False)
         self.checkBox_4.setTristate(False)
@@ -86,9 +87,11 @@ class Ui_Dialog(object):
         self.horizontalLayout_5.setContentsMargins(5, -1, 14, -1)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.label = QtWidgets.QLabel(self.layoutWidget)
+        self.label.setEnabled(False)
         self.label.setObjectName("label")
         self.horizontalLayout_5.addWidget(self.label)
         self.lineEdit = QtWidgets.QLineEdit(self.layoutWidget)
+        self.lineEdit.setEnabled(False)
         self.lineEdit.setText("")
         self.lineEdit.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit.setObjectName("lineEdit")
@@ -113,6 +116,7 @@ class Ui_Dialog(object):
         self.radioButton.setObjectName("radioButton")
         self.horizontalLayout_3.addWidget(self.radioButton)
         self.textEdit = QtWidgets.QTextEdit(self.layoutWidget1)
+        self.textEdit.setEnabled(False)
         self.textEdit.setObjectName("textEdit")
         self.horizontalLayout_3.addWidget(self.textEdit)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
@@ -122,6 +126,7 @@ class Ui_Dialog(object):
         self.radioButton_2.setObjectName("radioButton_2")
         self.horizontalLayout_4.addWidget(self.radioButton_2)
         self.textEdit_2 = QtWidgets.QTextEdit(self.layoutWidget1)
+        self.textEdit_2.setEnabled(False)
         self.textEdit_2.setObjectName("textEdit_2")
         self.horizontalLayout_4.addWidget(self.textEdit_2)
         self.verticalLayout_2.addLayout(self.horizontalLayout_4)
@@ -152,7 +157,7 @@ class Ui_Dialog(object):
         self.tableWidget.horizontalHeader().setMinimumSectionSize(110)
         self.tableWidget.verticalHeader().setVisible(False)
         self.layoutWidget2 = QtWidgets.QWidget(self.tab_2)
-        self.layoutWidget2.setGeometry(QtCore.QRect(0, 270, 141, 31))
+        self.layoutWidget2.setGeometry(QtCore.QRect(0, 270, 111, 31))
         self.layoutWidget2.setObjectName("layoutWidget2")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.layoutWidget2)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -286,6 +291,8 @@ class Ui_Dialog(object):
         self.tabWidget.setCurrentIndex(0)
         self.pushButton_2.clicked.connect(Dialog.close)
         self.radioButton_5.toggled['bool'].connect(self.lineEdit_22.setEnabled)
+        self.radioButton.toggled['bool'].connect(self.textEdit.setEnabled)
+        self.radioButton_2.toggled['bool'].connect(self.textEdit_2.setEnabled)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
@@ -327,7 +334,9 @@ class Ui_Dialog(object):
         self.radioButton_5.setText(_translate("Dialog", "部分回空:"))
         self.label_6.setText(_translate("Dialog", "3320返回值:"))
         self.lineEdit_3.setText(_translate("Dialog",
-                                           "85 01 00 33 20 02 00 01 01 04 51 30 1b 02 00 51 30 2a 02 00 51 30 13 02 00 51 30 11 02 00 00 00"))
+                                           "85 01 00 33 20 02 00 01 01 04 51 30 1b 02 00 51 30 2a 02 00 51 30 13 02 00 51 30 11 02 00 00\n"
+                                           "                       00\n"
+                                           "                   "))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("Dialog", "*698高级"))
         self.groupBox.setTitle(_translate("Dialog", "抄表log导出为:"))
         self.pushButton_5.setText(_translate("Dialog", "txt格式"))
@@ -341,9 +350,10 @@ class Ui_Dialog(object):
                                            "p, li { white-space: pre-wrap; }\n"
                                            "</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">                       </p>\n"
-                                           "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">返回年月日周:@GetDateWeek@                       </p>\n"
-                                           "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">返回当前时间:@GetTime@                       </p>\n"
-                                           "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">返回冻结时标(当前):@FreezeTime@                   </p></body></html>"))
+                                           "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">                        </p>\n"
+                                           "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">返回年月日周:@GetDateWeek@                        </p>\n"
+                                           "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">返回当前时间:@GetTime@                        </p>\n"
+                                           "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">返回冻结时标(当前):@FreezeTime@                    </p></body></html>"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("Dialog", "其它"))
         self.pushButton.setText(_translate("Dialog", "Save"))
         self.pushButton_2.setText(_translate("Dialog", "Cancel"))
