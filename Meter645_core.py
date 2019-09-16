@@ -1,7 +1,7 @@
 '''
     645模拟表程序
 '''
-import Comm, binascii, re, serial, time, datetime, configparser
+import Comm, binascii, re, serial, time, datetime, configparser, traceback
 
 
 def Electricity_meter_date_and_week_and_time(data):
@@ -85,7 +85,10 @@ def readdata(OI):
 
     except:
         print('未知数据标识: ', OI)
-        traceback.print_exc(file=open('bug.txt', 'a+'))
+        if OI[0].upper() == 'X':
+            return None
+        else:
+            traceback.print_exc(file=open('bug.txt', 'a+'))
 
     # f = open('source\\07data', 'r', encoding='UTF-8')
     # while 1:
@@ -185,12 +188,15 @@ def deal_receive(message):
         L = ''
         D = ''
         text = returnframe(Comm.list2str(address), reconctrlcode, L, D, returnstr)
-        return (text, '无法解析:', OI)
+        if OI[0].upper() == 'X':
+            return (text, '无法解析')
+        else:
+            return (text, '无法解析:', OI)
     else:
-        if re.match("0201FF00", OI):
-            returnstr = "3232" + "3232" * 2;
+        # if re.match("0201FF00", OI):
+        #     returnstr = "3232" + "3232" * 2;
 
-        elif re.match("0610", OI):
+        if re.match("0610", OI):
             TIME = Comm.list2str(message[15:20])
             print("time:", TIME, message[14])
             times = int(message[14], 16) - 33

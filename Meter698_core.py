@@ -120,7 +120,8 @@ def Analysis(code):
         CA = code_remain[1 + SA_len_num:][0]
         HCS = code_remain[1 + SA_len_num:][1] + code_remain[1 + SA_len_num:][2]
         APDU = code_remain[1 + SA_len_num:][3:-3]
-        Information(APDU[0], APDU[1], APDU[2:])
+        if Information(APDU[0], APDU[1], APDU[2:]) is None:
+            return 1
         s = LargeOAD
         LargeOAD = ''
         data_list = []
@@ -193,7 +194,8 @@ def Information(num, detail, APDU):
             global frozenSign, data_list
             if returnvalue == 0:
                 print('抄事件')
-                Event(APDU[1:])
+                if Event(APDU[1:]) is None:
+                    return None
                 return 0
             if returnvalue == '5002':
                 frozenSign = 1
@@ -288,6 +290,7 @@ def Information(num, detail, APDU):
                 print('非随机数无法读取')
         if detail == '01':
             print('密文无法读取!!')
+    return 0
 
 
 def SequenceOfLen(remain):
@@ -325,7 +328,8 @@ def Event(APDU):
             RCSD_len -= 1
             message = message + Comm.list2str(remain[0:5])
             value = Comm.list2str(remain[1:5]).zfill(4)
-            event_compose_data(value)
+            if event_compose_data(value) is None:
+                return None
             remain = remain[5:]
         global event_stat
         print("event_stat:", event_stat)
@@ -352,6 +356,7 @@ def Event(APDU):
         print('组成', LargeOAD)
     else:
         print('其他')
+        return 0
 
 
 def event_compose_data(OI):
@@ -364,9 +369,11 @@ def event_compose_data(OI):
         print("事件", text)
         global LargeOAD
         LargeOAD = LargeOAD + text[2]
+        return 0
     except:
         print('未知数据标识: ', OI)
         traceback.print_exc(file=open('bug.txt', 'a+'))
+        return None
 
 def A_ResultRecord_SEQUENCE_RSD(remain):
     try:
