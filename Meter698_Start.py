@@ -60,26 +60,43 @@ class MainWindow(QMainWindow):
         try:
             if os.path.exists('config.ini'):
                 self.conf.read('config.ini', encoding='utf-8')
-                if self.conf.has_section('MeterData698') is True:
-                    pass
+                print("read config.ini")
+                if self.conf.has_section('MeterData698') is True and self.conf.has_section('MeterData645'):
+                    print("read config.ini ok")
+                    return 0
                 else:
+                    print("read config.ini false")
                     self.ini()
             else:
+                print("no config.ini")
                 self.ini()
         except:
             print_exc(file=open('bug.txt', 'a+'))
 
     def ini(self):
-        ini = open('config.ini', 'w', encoding='utf-8')
-        self.conf.add_section('MeterData698')
-        data = open('source\\698data', 'r', encoding='utf-8')
-        while 1:
-            text = data.readline()
-            if text == '\n':
-                break
-            text = text.split(' ')
-            self.conf.set('MeterData698', text[0], text[1] + ' ' + text[2][:-1])
-        self.conf.write(ini)
+        try:
+            ini = open('config.ini', 'w', encoding='utf-8')
+            self.conf.add_section('MeterData698')
+            data = open('source\\698data', 'r', encoding='utf-8')
+            while 1:
+                text = data.readline()
+                if text == '\n' or text == '':
+                    break
+                text = text.split(' ')
+                self.conf.set('MeterData698', text[0], text[1] + ' ' + text[2][:-1])
+
+            self.conf.add_section('MeterData645')
+            data = open('source\\07data', 'r', encoding='utf-8')
+            while 1:
+                text = data.readline()
+                if text == '\n' or text == '':
+                    break
+                text = text.split(' ')
+                self.conf.set('MeterData645', text[0], text[2] + ' ' + text[3][:-1])
+            self.conf.write(ini)
+        except:
+            print("error: ", text)
+            print_exc(file=open('bug.txt', 'a+'))
 
     def serial_prepare(self):
         try:

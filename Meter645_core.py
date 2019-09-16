@@ -1,7 +1,7 @@
 '''
-    模拟表程序
+    645模拟表程序
 '''
-import Comm, binascii, re, serial, time, datetime
+import Comm, binascii, re, serial, time, datetime, configparser
 
 
 def Electricity_meter_date_and_week_and_time(data):
@@ -67,26 +67,46 @@ def CS(list, b):
 
 
 def readdata(OI):
-    f = open('source\\07data', 'r', encoding='UTF-8')
-    while 1:
-        text = f.readline()
-        if text == '':
-            print('ERROR ON read_data')
-            break
-        text1 = re.findall(OI, text)
-        if not text1:
-            continue
-        else:
-            if text1[0] == OI:
-                text = text.split(' ')
-                data = (text[-1][0:-1]).replace(',', '')
-                name = text[-2]
-                if data[0] == '@':
-                    data_time = Electricity_meter_date_and_week_and_time(data)
-                    print('数据标识及时间', name, datetime.datetime.now().strftime('%T'))
-                    return data_time, name
-                print('数据标识及时间:', name, datetime.datetime.now().strftime('%T'))
-                return data, name
+    conf_new = configparser.ConfigParser()
+    conf_new.read('config.ini', encoding='utf-8')
+    try:
+        get = conf_new.get('MeterData645', OI)
+        get = get.split(' ')
+        text = [OI, get[0], get[1]]
+        print("事件", text)
+        data = (text[-1]).replace(',', '')
+        name = text[-2]
+        if data[0] == '@':
+            data_time = Electricity_meter_date_and_week_and_time(data)
+            print('数据标识及时间', name, datetime.datetime.now().strftime('%T'))
+            return data_time, name
+        print('数据标识及时间:', name, datetime.datetime.now().strftime('%T'))
+        return data, name
+
+    except:
+        print('未知数据标识: ', OI)
+        traceback.print_exc(file=open('bug.txt', 'a+'))
+
+    # f = open('source\\07data', 'r', encoding='UTF-8')
+    # while 1:
+    #     text = f.readline()
+    #     if text == '':
+    #         print('ERROR ON read_data')
+    #         break
+    #     text1 = re.findall(OI, text)
+    #     if not text1:
+    #         continue
+    #     else:
+    #         if text1[0] == OI:
+    #             text = text.split(' ')
+    #             data = (text[-1][0:-1]).replace(',', '')
+    #             name = text[-2]
+    #             if data[0] == '@':
+    #                 data_time = Electricity_meter_date_and_week_and_time(data)
+    #                 print('数据标识及时间', name, datetime.datetime.now().strftime('%T'))
+    #                 return data_time, name
+    #             print('数据标识及时间:', name, datetime.datetime.now().strftime('%T'))
+    #             return data, name
     return None
 
 

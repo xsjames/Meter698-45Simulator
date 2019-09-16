@@ -157,7 +157,7 @@ class Ui_Dialog(object):
         self.tableWidget.horizontalHeader().setMinimumSectionSize(110)
         self.tableWidget.verticalHeader().setVisible(False)
         self.layoutWidget2 = QtWidgets.QWidget(self.tab_2)
-        self.layoutWidget2.setGeometry(QtCore.QRect(0, 270, 111, 31))
+        self.layoutWidget2.setGeometry(QtCore.QRect(0, 270, 239, 31))
         self.layoutWidget2.setObjectName("layoutWidget2")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.layoutWidget2)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -244,7 +244,7 @@ class Ui_Dialog(object):
         self.lineEdit_3.setGeometry(QtCore.QRect(100, 128, 461, 20))
         self.lineEdit_3.setFrame(True)
         self.lineEdit_3.setEchoMode(QtWidgets.QLineEdit.Normal)
-        self.lineEdit_3.setCursorPosition(0)
+        self.lineEdit_3.setCursorPosition(95)
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.tabWidget.addTab(self.tab_4, "")
         self.tab_3 = QtWidgets.QWidget()
@@ -334,9 +334,7 @@ class Ui_Dialog(object):
         self.radioButton_5.setText(_translate("Dialog", "部分回空:"))
         self.label_6.setText(_translate("Dialog", "3320返回值:"))
         self.lineEdit_3.setText(_translate("Dialog",
-                                           "85 01 00 33 20 02 00 01 01 04 51 30 1b 02 00 51 30 2a 02 00 51 30 13 02 00 51 30 11 02 00 00\n"
-                                           "                       00\n"
-                                           "                   "))
+                                           "85 01 00 33 20 02 00 01 01 04 51 30 1b 02 00 51 30 2a 02 00 51 30 13 02 00 51 30 11 02 00 00 00"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("Dialog", "*698高级"))
         self.groupBox.setTitle(_translate("Dialog", "抄表log导出为:"))
         self.pushButton_5.setText(_translate("Dialog", "txt格式"))
@@ -350,6 +348,7 @@ class Ui_Dialog(object):
                                            "p, li { white-space: pre-wrap; }\n"
                                            "</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">                       </p>\n"
+                                           "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">                        </p>\n"
                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">                        </p>\n"
                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">返回年月日周:@GetDateWeek@                        </p>\n"
                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">返回当前时间:@GetTime@                        </p>\n"

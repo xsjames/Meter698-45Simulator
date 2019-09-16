@@ -20,7 +20,6 @@ def check(code):
 
 def B_W_add(stat, add):
     global black_white_SA_address, black, white, b_w_stat
-
     if stat == 0:
         b_w_stat = 0
         black = []
@@ -356,22 +355,18 @@ def Event(APDU):
 
 
 def event_compose_data(OI):
-    compose = open('source\\698data', 'r', encoding='UTF-8', errors='ignore')
-    while 1:
-        text = compose.readline()
-        if not text:
-            print('未找到数据标识!')
-            break
-        text = text.split(' ')
-        if text[0] == OI:
-            print('text', text)
-            message = text[2]
-            print('message', message[0:-1])
-            global LargeOAD
-            LargeOAD = LargeOAD + message[0:-1]
-            break
-    compose.close()
-
+    conf_new = configparser.ConfigParser()
+    conf_new.read('config.ini', encoding='utf-8')
+    try:
+        get = conf_new.get('MeterData698', OI)
+        get = get.split(' ')
+        text = [OI, get[0], get[1]]
+        print("事件", text)
+        global LargeOAD
+        LargeOAD = LargeOAD + text[2]
+    except:
+        print('未知数据标识: ', OI)
+        traceback.print_exc(file=open('bug.txt', 'a+'))
 
 def A_ResultRecord_SEQUENCE_RSD(remain):
     try:
