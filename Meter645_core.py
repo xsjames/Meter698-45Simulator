@@ -85,31 +85,10 @@ def readdata(OI):
 
     except:
         print('未知数据标识: ', OI)
-        if OI[0].upper() == 'X':
+        if OI[0].upper() == 'X' or OI.__len__() != 8:
             return None
         else:
             traceback.print_exc(file=open('bug.txt', 'a+'))
-
-    # f = open('source\\07data', 'r', encoding='UTF-8')
-    # while 1:
-    #     text = f.readline()
-    #     if text == '':
-    #         print('ERROR ON read_data')
-    #         break
-    #     text1 = re.findall(OI, text)
-    #     if not text1:
-    #         continue
-    #     else:
-    #         if text1[0] == OI:
-    #             text = text.split(' ')
-    #             data = (text[-1][0:-1]).replace(',', '')
-    #             name = text[-2]
-    #             if data[0] == '@':
-    #                 data_time = Electricity_meter_date_and_week_and_time(data)
-    #                 print('数据标识及时间', name, datetime.datetime.now().strftime('%T'))
-    #                 return data_time, name
-    #             print('数据标识及时间:', name, datetime.datetime.now().strftime('%T'))
-    #             return data, name
     return None
 
 

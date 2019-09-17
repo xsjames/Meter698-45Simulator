@@ -117,6 +117,7 @@ class Ui_Dialog(object):
         self.horizontalLayout_3.addWidget(self.radioButton)
         self.textEdit = QtWidgets.QTextEdit(self.layoutWidget1)
         self.textEdit.setEnabled(False)
+        self.textEdit.setAcceptRichText(False)
         self.textEdit.setObjectName("textEdit")
         self.horizontalLayout_3.addWidget(self.textEdit)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
@@ -127,6 +128,7 @@ class Ui_Dialog(object):
         self.horizontalLayout_4.addWidget(self.radioButton_2)
         self.textEdit_2 = QtWidgets.QTextEdit(self.layoutWidget1)
         self.textEdit_2.setEnabled(False)
+        self.textEdit_2.setAcceptRichText(False)
         self.textEdit_2.setObjectName("textEdit_2")
         self.horizontalLayout_4.addWidget(self.textEdit_2)
         self.verticalLayout_2.addLayout(self.horizontalLayout_4)
@@ -157,7 +159,7 @@ class Ui_Dialog(object):
         self.tableWidget.horizontalHeader().setMinimumSectionSize(110)
         self.tableWidget.verticalHeader().setVisible(False)
         self.layoutWidget2 = QtWidgets.QWidget(self.tab_2)
-        self.layoutWidget2.setGeometry(QtCore.QRect(0, 270, 239, 31))
+        self.layoutWidget2.setGeometry(QtCore.QRect(0, 270, 121, 31))
         self.layoutWidget2.setObjectName("layoutWidget2")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.layoutWidget2)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -244,7 +246,7 @@ class Ui_Dialog(object):
         self.lineEdit_3.setGeometry(QtCore.QRect(100, 128, 461, 20))
         self.lineEdit_3.setFrame(True)
         self.lineEdit_3.setEchoMode(QtWidgets.QLineEdit.Normal)
-        self.lineEdit_3.setCursorPosition(95)
+        self.lineEdit_3.setCursorPosition(0)
         self.lineEdit_3.setObjectName("lineEdit_3")
         self.tabWidget.addTab(self.tab_4, "")
         self.tab_3 = QtWidgets.QWidget()
@@ -308,6 +310,7 @@ class Ui_Dialog(object):
         self.radioButton_3.setText(_translate("Dialog", "未启用"))
         self.radioButton.setText(_translate("Dialog", "黑名单:"))
         self.radioButton_2.setText(_translate("Dialog", "白名单:"))
+        self.textEdit_2.setPlaceholderText(_translate("Dialog", "包含载波搜表回复地址,白名单关闭或搜表帧用全A回复地址为:000000000001"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("Dialog", "功能"))
         self.tableWidget.setSortingEnabled(True)
         item = self.tableWidget.horizontalHeaderItem(0)
@@ -348,6 +351,7 @@ class Ui_Dialog(object):
                                            "p, li { white-space: pre-wrap; }\n"
                                            "</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">                       </p>\n"
+                                           "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">                        </p>\n"
                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">                        </p>\n"
                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">                        </p>\n"
                                            "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">返回年月日周:@GetDateWeek@                        </p>\n"

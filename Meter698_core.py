@@ -673,10 +673,16 @@ class ReturnMessage():
     def head(self):
         global SA_num
         self.ctrlzone = 'c3'
+        self.add = Comm.list2str(SA_num_len)
         if SA_num == 0:
-            self.add = Comm.list2str(SA_num_len)
+            if self.add.find('a') > -1:
+                self.add = '05' + Comm.list2str(Comm.makelist(self.Re_add())[::-1])
+                print('add', self.add)
         elif SA_num == 1:
-            self.add = '05' + Comm.list2str(Comm.makelist(self.Re_add())[::-1])
+            if self.add.find('a') == -1:
+                pass
+            else:
+                self.add = '05' + Comm.list2str(Comm.makelist(self.Re_add())[::-1])
             print('add', self.add)
         self.CA = '00'
         self.totallenth()
@@ -721,7 +727,7 @@ class ReturnMessage():
             self.FCS = self.FCS + '00'
         # print(self.FCS)
         LargeOAD = '68' + LargeOAD + self.FCS + '16'
-        print('发送报文:', LargeOAD)
+        print('发送报文:', LargeOAD, '\n')
 
     def Full_LargeOAD(self):
         global LargeOAD
@@ -777,7 +783,10 @@ class ReturnMessage():
                                 return 0
             # todo
             # trans = str(int(text[2][6:-1]) + random.randint(0, _max)).zfill(12)
-            trans = str(int(text[2][6::])).zfill(12)
+            if Comm.list2str(SA_num_len).find('a') == -1:
+                trans = Comm.list2str(SA_num_len)
+            else:
+                trans = str(int(text[2][6::])).zfill(12)
             print('compose_data_trans', trans)
             self.message = OI + '01' + '550705' + trans
             print('message', self.message)
