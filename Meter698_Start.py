@@ -1,5 +1,5 @@
 import UI_Meter698, sys, serial, serial.tools.list_ports, threading, Meter698_core, time, UI_Meter698_config, \
-    configparser, os
+    configparser, os, datetime
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QTableWidgetItem, QHeaderView, QFileDialog
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QIcon
@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.ui = UI_Meter698.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle('模拟表程序 v1.45')
+        self.setWindowTitle('模拟表程序 v1.46')
         self.addItem = self.GetSerialNumber()
         while 1:
             if self.addItem is None:
@@ -44,6 +44,11 @@ class MainWindow(QMainWindow):
         self.ui.pushButton_2.setToolTip('清空当前窗口记录')
         self.ui.toolButton.setToolTip('设置')
         self.ui.label_5.setText('')
+
+    def log_session(self, message):
+        if self.ui.checkBox.isChecked():
+            text = open(datetime.datetime.now().strftime('%y%m%d.log'), 'a+')
+            text.write(message + '\n')
 
     def showd(self):
         self.config.setWindowModality(Qt.ApplicationModal)
@@ -239,6 +244,7 @@ class Connect(threading.Thread):
                                     print('Received: ', data)
                                     Received_data = '收到:\n' + makestr(data)
                                     MainWindow._signal_text.emit(Received_data)
+                                    MainWindow.log_session(Received_data)
                                     self.Meter = Meter698_core
                                     wild = Meter698_core.Wild_match_Analysis(data.replace(' ', ''))
                                     if wild == 0:
@@ -261,8 +267,6 @@ class Connect(threading.Thread):
                                         print('data:', data)
                                         if data[-1] == '6' and data[-2] == '1' and len(data) > 20:
                                             if data[0] == '6' and data[1] == '8':
-                                                # TODO
-
                                                 print('完整报文:', data)
                                                 break
                                             elif data[0] == 'f' and data[1] == 'e':
@@ -305,14 +309,18 @@ class Connect(threading.Thread):
             message = '数据标识:' + get_list_sum(content)  # 显示
             sent = '发送:\n' + makestr(sent)
             MainWindow._signal_text.emit(message)
+            MainWindow.log_session(message)
             MainWindow._signal_text.emit(sent)
+            MainWindow.log_session(sent)
             ct = time.time()
             local_time = time.localtime(ct)
             data_head = time.strftime("%H:%M:%S", local_time)
             data_secs = (ct - int(ct)) * 1000
             time_stamp = "%s.%3d" % (data_head, data_secs)
             MainWindow._signal_text.emit(time_stamp)
+            MainWindow.log_session(time_stamp)
             MainWindow._signal_text.emit('--------------------------------')
+            MainWindow.log_session('--------------------------------')
             LargeOAD = ''
             data_list = []
             data = ''
@@ -328,15 +336,6 @@ class Config(QDialog):
         self.ui = UI_Meter698_config.Ui_Dialog()
         self.ui.setupUi(self)
         self.ui.pushButton.clicked.connect(self.running)
-        # self.ui.pushButton.clicked.connect(self.get_auto_day_frozon)
-        # self.ui.pushButton.clicked.connect(self.get_auto_curve_frozon)
-        # self.ui.pushButton.clicked.connect(self.get_auto_increase)
-        # self.ui.pushButton.clicked.connect(self.close)
-        # self.ui.pushButton.clicked.connect(self.list_save)
-        # self.ui.pushButton.clicked.connect(self.bw)
-        # self.ui.pushButton.clicked.connect(self.set_max)
-        # self.ui.pushButton.clicked.connect(self.set_mac)
-        # self.ui.pushButton.clicked.connect(self.sent_from_to)
         self.ui.pushButton_3.clicked.connect(self.list_increas)
         self.ui.pushButton_4.clicked.connect(self.list_decreas)
         self.conf = configparser.ConfigParser()

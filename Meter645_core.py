@@ -15,7 +15,7 @@ def Electricity_meter_date_and_week_and_time(data):
         return time2_str
     elif data == '@FreezeTime@':
         # time3_str = datetime.datetime.now().strftime('%M%H%d%m%y').replace(':', '')
-        time3_str = datetime.datetime.now().strftime('%y%m%d%H%M').replace(':', '')
+        time3_str = datetime.datetime.now().strftime('%y%m%d0000')
         return time3_str
     else:
         print('Electricity_meter_date_and_week_and_time not found!')

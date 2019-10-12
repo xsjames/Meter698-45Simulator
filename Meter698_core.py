@@ -75,7 +75,11 @@ def Analysis(code):
         global black_white_SA_address  # 收到报文的地址
         black_white_SA_address = Comm.list2str(SA_num_len[::-1][0:SA_len_num])
         print('black_white_SA_address', black_white_SA_address)
+        if b_w_stat == 0 and black_white_SA_address != 'aaaaaaaaaaaa' and black_white_SA_address.find('a') > -1:
+            print("blocked")
+            return 1
         if black_white_SA_address.find('a') == -1:
+
             if b_w_stat == 1:
                 for add in black:
                     print('add: ', add)
@@ -781,10 +785,9 @@ class ReturnMessage():
                                 print('message', self.message)
                                 LargeOAD = LargeOAD + self.message
                                 return 0
-            # todo
             # trans = str(int(text[2][6:-1]) + random.randint(0, _max)).zfill(12)
             if Comm.list2str(SA_num_len).find('a') == -1:
-                trans = Comm.list2str(SA_num_len)
+                trans = Comm.list2str(SA_num_len[1:][::-1])
             else:
                 trans = str(int(text[2][6::])).zfill(12)
             print('compose_data_trans', trans)
