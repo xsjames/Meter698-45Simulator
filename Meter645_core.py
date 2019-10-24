@@ -3,10 +3,15 @@
 '''
 import Comm, binascii, re, serial, time, datetime, configparser, traceback
 
+black_white_SA_address = ''
+black = []
+white = []
+address = []
+stat = 0
 
 def Electricity_meter_date_and_week_and_time(data):
     if data == '@GetDateWeek@':
-        time1_str = datetime.datetime.now().strftime('%C%m%d%w')
+        time1_str = datetime.datetime.now().strftime('%y%m%d%w')
         if len(time1_str) == 7:
             time1_str = time1_str[0:6] + '0' + time1_str[-1]
         return time1_str
@@ -141,19 +146,79 @@ def returnframe(add, reconctrlcode, L, D, N):
     return text
 
 
+def B_W_add(stat_, add):
+    global black_white_SA_address, black, white, stat
+    stat = stat_
+    if stat == 0:
+        black = []
+        white = []
+    elif stat == 1:
+        black_white_SA_address = add.replace(' ', '')
+        black_white_SA_address = black_white_SA_address.split('/')
+        black = black_white_SA_address
+    elif stat == 2:
+        black_white_SA_address = add.replace(' ', '')
+        black_white_SA_address = black_white_SA_address.split('/')
+        white = black_white_SA_address
+
+
 def deal_receive(message):
+
     if message[8] == "13":
         text = "68 01 00 00 00 00 00 68 93 06 34 33 33 33 33 33 9D 16".replace(' ', '')
         return (text, '0', '0')
     while 1:
         if message[0] == '68':
+            global address
             address = message[1:7]
             if address == ['aa', 'aa', 'aa', 'aa', 'aa', 'aa'] or address == ['99', '99', '99', '99', '99', '99']:
-                # if address[0] == 'aa' or address[0] == '99':
                 address = ['01', '00', '00', '00', '00', '00']
+
+            # insert
+            global stat
+            if stat == 1:
+                for add in black:
+                    print('add: ', add)
+                    if add.find('-') > 0:
+                        add_range = add.split('-')
+                        start = int(add_range[0])
+                        end = int(add_range[1])
+                        print("start: ", start, "end: ", end)
+                        if start <= int(Comm.list2str(address[::-1])) <= end:
+                            print('检测到黑名单地址范围')
+                            return None
+                    elif add == Comm.list2str(address[::-1]):
+                        return None
+            elif stat == 2:
+                num = 0
+                for add in white:
+                    print('add: ', add)
+                    if add.find('-') > 0:
+                        add_range = add.split('-')
+                        start = int(add_range[0])
+                        end = int(add_range[1])
+                        print("start: ", start, "end: ", end)
+                        if start <= int(Comm.list2str(address[::-1])) <= end:
+                            print('检测到白名单地址范围')
+                            num = -1
+                        else:
+                            num += 1
+                    elif add == Comm.list2str(address[::-1]):
+                        pass
+                    else:
+                        num += 1
+                print("白名单判断 ", Comm.list2str(address[::-1]))
+                if num == white.__len__():
+                    print('不通过')
+                    return None
+                elif num == -1:
+                    print('通过')
+                    pass
+            # insert
             break
         else:
             del message[0]
+
     reconctrlcode = conctrlcode(message[8])
     datasign = message[10:14]
     D = Comm.list2str(datasign)

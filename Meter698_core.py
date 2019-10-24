@@ -35,6 +35,7 @@ def B_W_add(stat, add):
         black_white_SA_address = black_white_SA_address.split('/')
         white = black_white_SA_address
     print('B_W_add:', black_white_SA_address)
+    Meter645_core.B_W_add(stat, add)
 
 
 def Wild_match_Analysis(code):
@@ -136,12 +137,12 @@ def Analysis(code):
     else:
         print('非698,尝试645')
         text = Meter645_core.deal_receive(code)
-
-        if text[0] == 0:
+        if text is None or text[0] == 0:
             print('645解析失败')
             return 1
         global OI
         OI = text[1:]
+        black_white_SA_address = Comm.list2str(Meter645_core.address[::-1])
         return text[0]
 
 
@@ -448,8 +449,8 @@ def OAD_SEQUENCE(OI, unsigned1, unsigned2):
     try:
         # unsigned11 = Comm.dec2bin(int(unsigned1)).zfill(8)  # 特征值
         # unsigned11 = int(unsigned11[0:4], 10)
-        unsigned1 = '属性 ' + unsigned1[1]
-        print('OI, unsigned1', OI, unsigned1)
+        # unsigned1 = '属性 ' + unsigned1[1]
+        # print('OI, unsigned1', OI, unsigned1)
         value = str(OI).zfill(4) + unsigned1[-1].zfill(2) + str(unsigned2).zfill(2)
         ReturnMessage().sequence_of_len()
         global frozenSign

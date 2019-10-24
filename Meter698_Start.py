@@ -1,5 +1,5 @@
 import UI_Meter698, sys, serial, serial.tools.list_ports, threading, Meter698_core, time, UI_Meter698_config, \
-    configparser, os, datetime
+    configparser, os, datetime, re
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QTableWidgetItem, QHeaderView, QFileDialog
 from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QIcon
@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.ui = UI_Meter698.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle('模拟表程序 v1.46')
+        self.setWindowTitle('模拟表程序 v1.47')
         self.addItem = self.GetSerialNumber()
         while 1:
             if self.addItem is None:
@@ -215,17 +215,16 @@ class Connect(threading.Thread):
                 print('sleep1')
 
     def serial_open(self):
-        self.serial.port = MainWindow.ui.comboBox.currentText()
-        self.serial.baudrate = int(MainWindow.ui.comboBox_2.currentText())
-        self.serial.parity = MainWindow.ui.comboBox_3.currentText()
-        self.serial.stopbits = int(MainWindow.ui.comboBox_4.currentText())
-        self.serial.timeout = 1
-
         if self.serial.isOpen() is True:
             print('close')
             self.serial.close()
         else:
             try:
+                self.serial.port = MainWindow.ui.comboBox.currentText()
+                self.serial.baudrate = int(MainWindow.ui.comboBox_2.currentText())
+                self.serial.parity = MainWindow.ui.comboBox_3.currentText()
+                self.serial.stopbits = int(MainWindow.ui.comboBox_4.currentText())
+                self.serial.timeout = 1
                 self.serial.open()
                 MainWindow.ui.pushButton.setText('关闭')
                 print('启动')
@@ -306,7 +305,7 @@ class Connect(threading.Thread):
             self.Meter.ReturnMessage()
             content = self.Meter.ReturnMessage().transport()
             # print('content:', content)
-            message = '数据标识:' + get_list_sum(content)  # 显示
+            message = '数据标识:' + get_list_sum(content) + '\n表地址:' + Meter698_core.black_white_SA_address  # 显示
             sent = '发送:\n' + makestr(sent)
             MainWindow._signal_text.emit(message)
             MainWindow.log_session(message)
