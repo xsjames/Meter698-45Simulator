@@ -299,10 +299,17 @@ def Information(num, detail, APDU):
 
 
 def SequenceOfLen(remain):
+    global LargeOAD, relen
     lenth = int(remain[0], 16)
     remain = remain[1:]
     while lenth > 0:
-        A_ResultRecord_SEQUENCE(remain[0:4])
+        returnvalue = A_ResultRecord_SEQUENCE(remain[0:4])
+        if returnvalue == 0:
+            print('0502抄事件临时处理')
+            ReturnMessage().save(['事件响应', Comm.list2str(remain[0:4]), ''])
+            LargeOAD = Comm.list2str(remain[0:4]) + '0100'
+            relen += 1
+
         remain = remain[4:]
         lenth -= 1
 

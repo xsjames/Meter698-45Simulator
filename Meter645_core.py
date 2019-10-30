@@ -9,6 +9,7 @@ white = []
 address = []
 stat = 0
 
+
 def Electricity_meter_date_and_week_and_time(data):
     if data == '@GetDateWeek@':
         time1_str = datetime.datetime.now().strftime('%y%m%d%w')
@@ -79,21 +80,23 @@ def readdata(OI):
         get = get.split(' ')
         text = [OI, get[0], get[1]]
         print("事件", text)
-        data = (text[-1]).replace(',', '')
+        # data = (text[-1]).replace(',', '')
+        data = text[-1]
         name = text[-2]
         if data[0] == '@':
             data_time = Electricity_meter_date_and_week_and_time(data)
             print('数据标识及时间', name, datetime.datetime.now().strftime('%T'))
             return data_time, name
         print('数据标识及时间:', name, datetime.datetime.now().strftime('%T'))
+        print('readdata ', data, name)
         return data, name
 
     except:
         print('未知数据标识: ', OI)
         if OI[0].upper() == 'X' or OI.__len__() != 8:
             return None
-        else:
-            traceback.print_exc(file=open('bug.txt', 'a+'))
+        # else:
+        #     traceback.print_exc(file=open('bug.txt', 'a+'))
     return None
 
 
@@ -103,6 +106,7 @@ def plus33(message):
         print('plus33 is none')
     else:
         if re.findall(',', message):
+            # line
             message = message.split(',')
             lenth = len(message)
             i = 0
@@ -115,7 +119,6 @@ def plus33(message):
                     new_list.append(hex(int(returnvalue.pop(), 16) + 51)[2:])
                 value_str = Comm.list2str(new_list)
                 newstr = newstr + value_str
-                return newstr
         else:
             message = Comm.makelist(message)
             lenth = len(message)
@@ -124,7 +127,7 @@ def plus33(message):
                 lenth -= 1
                 new_list.append(hex(int(message.pop(), 16) + 51)[2:])
             newstr = Comm.list2str(new_list)
-            return newstr
+        return newstr
 
 
 def minus33(list):
@@ -163,7 +166,6 @@ def B_W_add(stat_, add):
 
 
 def deal_receive(message):
-
     if message[8] == "13":
         text = "68 01 00 00 00 00 00 68 93 06 34 33 33 33 33 33 9D 16".replace(' ', '')
         return (text, '0', '0')
