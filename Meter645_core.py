@@ -175,7 +175,10 @@ def deal_receive(message):
             address = message[1:7]
             if address == ['aa', 'aa', 'aa', 'aa', 'aa', 'aa'] or address == ['99', '99', '99', '99', '99', '99']:
                 address = ['01', '00', '00', '00', '00', '00']
-
+            for x in address:
+                if x.find('a') > -1:
+                    print('find a re None')
+                    return None
             # insert
             global stat
             if stat == 1:
@@ -189,8 +192,6 @@ def deal_receive(message):
                         if start <= int(Comm.list2str(address[::-1])) <= end:
                             print('检测到黑名单地址范围')
                             return None
-                    elif add == Comm.list2str(address[::-1]):
-                        return None
             elif stat == 2:
                 num = 0
                 for add in white:
@@ -205,15 +206,13 @@ def deal_receive(message):
                             num = -1
                         else:
                             num += 1
-                    elif add == Comm.list2str(address[::-1]):
-                        pass
                     else:
                         num += 1
                 print("白名单判断 ", Comm.list2str(address[::-1]))
-                if num == white.__len__():
+                if num == -1:
                     print('不通过')
                     return None
-                elif num == -1:
+                elif num == 1:
                     print('通过')
                     pass
             # insert

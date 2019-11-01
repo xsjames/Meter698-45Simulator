@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.ui = UI_Meter698.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.setWindowTitle('模拟表程序 v1.5')
+        self.setWindowTitle('模拟表程序 v1.51')
         self.addItem = self.GetSerialNumber()
         while 1:
             if self.addItem is None:
@@ -300,7 +300,16 @@ class Connect(threading.Thread):
 
     def _Sent(self, sent):
         global data, LargeOAD, frozenSign, data_list
-        if sent != 1:
+        if sent == 2:
+            message = "2130为旧规约,不返回内容"
+            MainWindow._signal_text.emit(message)
+            MainWindow.log_session(message)
+            LargeOAD = ''
+            data_list = []
+            data = ''
+            frozenSign = 0
+            self.Meter.ReturnMessage().clear_OI()
+        elif sent != 1:
             self.serial.write(a2b_hex(sent))
             self.Meter.ReturnMessage()
             content = self.Meter.ReturnMessage().transport()

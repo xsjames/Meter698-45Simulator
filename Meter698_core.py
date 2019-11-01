@@ -56,6 +56,9 @@ def Wild_match_Analysis(code):
 
 
 def Analysis(code):
+    if code.find("21300202") != -1 or code.find("21300200") != -1 or code.find("21300201") != -1:
+        print("111111111111")
+        return 2
     code = Comm.makelist(code)
     re_ = check(code)
     if re_ == 0:
@@ -76,11 +79,11 @@ def Analysis(code):
         global black_white_SA_address  # 收到报文的地址
         black_white_SA_address = Comm.list2str(SA_num_len[::-1][0:SA_len_num])
         print('black_white_SA_address', black_white_SA_address)
-        if b_w_stat == 0 and black_white_SA_address != 'aaaaaaaaaaaa' and black_white_SA_address.find('a') > -1:
+        print('black_white_SA_address a?', black_white_SA_address.find('a'))
+        if b_w_stat == 0 and black_white_SA_address.find('a') > -1:
             print("blocked")
             return 1
         if black_white_SA_address.find('a') == -1:
-
             if b_w_stat == 1:
                 for add in black:
                     print('add: ', add)
@@ -122,6 +125,12 @@ def Analysis(code):
                 elif num == -1:
                     print('通过')
                     pass
+        else:
+            print(" find a")
+            print("blocked")
+            # todo
+            return 1
+
         CA = code_remain[1 + SA_len_num:][0]
         HCS = code_remain[1 + SA_len_num:][1] + code_remain[1 + SA_len_num:][2]
         APDU = code_remain[1 + SA_len_num:][3:-3]
