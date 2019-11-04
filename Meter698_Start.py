@@ -300,6 +300,17 @@ class Connect(threading.Thread):
 
     def _Sent(self, sent):
         global data, LargeOAD, frozenSign, data_list
+        if sent == 3:
+            message = "开启白名单以启用搜698表"
+            MainWindow._signal_text.emit(message)
+            MainWindow.log_session(message)
+            LargeOAD = ''
+            data_list = []
+            data = ''
+            frozenSign = 0
+            self.Meter.ReturnMessage().clear_OI()
+            MainWindow._signal_text.emit('--------------------------------')
+            MainWindow.log_session('--------------------------------')
         if sent == 2:
             message = "2130为旧规约,不返回内容"
             MainWindow._signal_text.emit(message)

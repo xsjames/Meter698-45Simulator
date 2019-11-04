@@ -174,7 +174,7 @@ def deal_receive(message):
             global address
             address = message[1:7]
             if address == ['aa', 'aa', 'aa', 'aa', 'aa', 'aa'] or address == ['99', '99', '99', '99', '99', '99']:
-                address = ['01', '00', '00', '00', '00', '00']
+                return None
             for x in address:
                 if x.find('a') > -1:
                     print('find a re None')
@@ -205,17 +205,15 @@ def deal_receive(message):
                             print('检测到白名单地址范围')
                             num = -1
                         else:
-                            num += 1
+                            num = 1
                     else:
-                        num += 1
+                        num = 1
                 print("白名单判断 ", Comm.list2str(address[::-1]))
                 if num == -1:
+                    print('通过')
+                elif num == 1:
                     print('不通过')
                     return None
-                elif num == 1:
-                    print('通过')
-                    pass
-            # insert
             break
         else:
             del message[0]

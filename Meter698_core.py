@@ -80,9 +80,11 @@ def Analysis(code):
         black_white_SA_address = Comm.list2str(SA_num_len[::-1][0:SA_len_num])
         print('black_white_SA_address', black_white_SA_address)
         print('black_white_SA_address a?', black_white_SA_address.find('a'))
+        black_white_SA_address_makestr = Comm.makelist(black_white_SA_address)
+
         if b_w_stat == 0 and black_white_SA_address.find('a') > -1:
             print("blocked")
-            return 1
+            return 3
         if black_white_SA_address.find('a') == -1:
             if b_w_stat == 1:
                 for add in black:
@@ -113,23 +115,64 @@ def Analysis(code):
                             num = -1
                             break
                         else:
-                            num += 1
+                            num = 1
                     elif add == black_white_SA_address:
+                        print('发现白名单')
                         break
                     else:
-                        num += 1
-                print("白名单判断 ", black_white_SA_address)
-                if num == white.__len__():
+                        num = 1
+                print("白名单判断 ", black_white_SA_address, num)
+                if num == -1:
+                    print('通过')
+                else:
                     print('不通过')
                     return 1
-                elif num == -1:
-                    print('通过')
-                    pass
         else:
             print(" find a")
-            print("blocked")
-            # todo
-            return 1
+            if black_white_SA_address != 'aaaaaaaaaaaa':
+                if b_w_stat == 2:
+                    whitelist = []
+                    find_aa = 0
+                    match = 0
+                    black_white_SA_address_makelist = Comm.makelist(black_white_SA_address)
+                    for x in range(6):
+                        if black_white_SA_address_makelist[x] == 'aa':
+                            find_aa += 1
+                    black_white_SA_address_makelist_int = int(Comm.list2str(black_white_SA_address_makelist[find_aa:]))
+                    for add in white:
+                        print('add: ', add)
+                        if add.find('-') > 0:
+                            add_range = add.split('-')
+                            start = int(add_range[0])
+                            end = int(add_range[1])
+                            print("start: ", start, "end: ", end)
+                            while start <= end:
+                                whitelist.append(start)
+                                start += 1
+                            print("whitelist: ", whitelist)
+                            for x in whitelist:
+                                x_makelist = int(Comm.list2str(Comm.makelist(str(x))[find_aa:]))
+                                print('matching', black_white_SA_address_makelist_int, x_makelist)
+                                if black_white_SA_address_makelist_int == x_makelist:
+                                    print('match')
+                                    match = 1
+                                    break
+                            if match == 0:
+                                return 1
+                        else:
+                            for x in white:
+                                x_makelist = int(Comm.list2str(Comm.makelist(str(x))[find_aa:]))
+                                print('matching', black_white_SA_address_makelist_int, x_makelist)
+                                if black_white_SA_address_makelist_int == x_makelist:
+                                    print('match')
+                                    match = 1
+                                    break
+                            if match == 0:
+                                return 1
+
+                else:
+                    print("blocked")
+                    return 1
 
         CA = code_remain[1 + SA_len_num:][0]
         HCS = code_remain[1 + SA_len_num:][1] + code_remain[1 + SA_len_num:][2]
@@ -395,6 +438,7 @@ def event_compose_data(OI):
         print('未知数据标识: ', OI)
         traceback.print_exc(file=open('bug.txt', 'a+'))
         return None
+
 
 def A_ResultRecord_SEQUENCE_RSD(remain):
     try:
